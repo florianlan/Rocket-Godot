@@ -1,21 +1,55 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://assets/icon.png" type="Texture" id=1]
 [ext_resource path="res://assets/flamme.png" type="Texture" id=2]
 [ext_resource path="res://assets/rocket-ship.png" type="Texture" id=3]
 [ext_resource path="res://scenes/flame.tres.gd" type="Script" id=4]
-[ext_resource path="res://RigidBody2D.gd" type="Script" id=6]
+[ext_resource path="res://RigidBody2D.gd" type="Script" id=5]
+[ext_resource path="res://StaticBody2D.gd" type="Script" id=6]
+[ext_resource path="res://rocket.gd" type="Script" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 38.4248, 38.4491 )
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 38.8002, 46.1912 )
+[sub_resource type="Animation" id=3]
+resource_name = "flame"
+length = 0.5
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 5 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "stop"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource( 7 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2( 550, 1000 )
+script = ExtResource( 6 )
 
 [node name="ground" type="Sprite" parent="StaticBody2D"]
 scale = Vector2( 1.2, 1.2 )
@@ -26,19 +60,23 @@ shape = SubResource( 1 )
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 position = Vector2( 550, 50 )
-script = ExtResource( 6 )
+script = ExtResource( 5 )
 
 [node name="rocket-ship" type="Sprite" parent="RigidBody2D"]
 scale = Vector2( 0.18, 0.18 )
 texture = ExtResource( 3 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-shape = SubResource( 2 )
-
 [node name="flamme" type="Sprite" parent="RigidBody2D"]
-position = Vector2( -1.18591, 72.6026 )
+position = Vector2( 0.00463867, 72.2057 )
 rotation = 3.14159
 scale = Vector2( 3.69029, 3.82302 )
 texture = ExtResource( 2 )
 hframes = 6
 script = ExtResource( 4 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="RigidBody2D/flamme"]
+anims/flame = SubResource( 3 )
+anims/stop = SubResource( 4 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RigidBody2D"]
+polygon = PoolVector2Array( -33.0151, 46.2438, -12.3788, 35.132, -10.3693, 40.7761, 9.39178, 40.9863, 15.5934, 36.5716, 16.8547, 36.3614, 32.7267, 46.5573, 34.4084, 44.6653, 35.0391, 35.6256, 34.1982, 25.1144, 29.75, 15.125, 23.5, 10.625, 20.375, 6.625, 22.1089, -5.44344, 21.0494, -16.1705, 18.1359, -24.2489, 11.7791, -35.2408, 3.24072, -44.714, -0.0809326, -47.2184, -3.37817, -44.4824, -11.6563, -34.9414, -16.5747, -27.7691, -20.9243, -16.6848, -21.5396, -3.58712, -20.3503, 8.7509, -24.2153, 10.9807, -29.5667, 15.7375, -32.837, 20.3457, -35.0668, 32.0891, -35.2154, 39.373, -34.4522, 44.3986 )
